@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/pages")
@@ -43,22 +44,20 @@ public class PageController {
           @RequestBody RequestPage requestPage,
           @RequestHeader String token
   ) {
-
     String userIdByToken = jwtService.getUserIdByToken(token);
     jwtService.verifyJWT(token, userIdByToken);
-
-    Page newPage = pageService.createNewPage(Integer.valueOf(userIdByToken), requestPage.getUrl());
-
-
-    pageService.getLinksFromUrl(newPage, requestPage.getUrl());
 
     ResponseApi<Object> response = ResponseApi.builder()
             .msgResponse(Constants.SUCCESS)
             .build();
 
-    return new ResponseEntity<>(
-            response, HttpStatus.OK
+    CompletableFuture<Page> newPageFuture = pageService.createNewPageAsync(
+            Integer.valueOf(userIdByToken), requestPage.getUrl()
     );
+
+    pageService.getLinksFromUrlAsync(newPageFuture.join(), requestPage.getUrl());
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @CrossOrigin(origins = Urls.ORIGEN)
