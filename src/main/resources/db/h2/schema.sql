@@ -1,7 +1,7 @@
-DROP TABLE IF EXISTS user_info;
-DROP TABLE IF EXISTS login;
-DROP TABLE IF EXISTS page;
 DROP TABLE IF EXISTS page_url;
+DROP TABLE IF EXISTS page;
+DROP TABLE IF EXISTS login;
+DROP TABLE IF EXISTS user_info;
 
 -- Create the 'user' table
 CREATE TABLE user_info (
