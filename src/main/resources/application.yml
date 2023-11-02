@@ -1,0 +1,63 @@
+server:
+  port: 8080
+database: h2
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: ''
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      schema-locations: classpath:/db/${database}/schema.sql
+      data-locations: classpath:/db/${database}/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: update
+      database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+  webflux:
+    cors:
+      allowed-origins: http://localhost:8080
+rsa: # I know this is not ok, but this was the fastest way to make JWT run, if I get the time I'll try to change by
+  #not having this in here. (Used by RSAKeyProperties)
+  privateKey: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDP/4UXuf+6MwS4
+    eG8SZbxuNjTcKWZyUWzxL7eWYzmYmgmMlXmzekcFKuSPpyIScd2cUNeozYmqtu3n
+    seHVQxZHGQAyk/oTSx+6M2diK36/tPY81TvNaL3s9Its1IFVBYvXtBiCiacwrQUM
+    b0N2WGZVbXQ7+GfKlpslMX67MwL3shvy/2M+Q1LVwok4xbm5COJBlv6DqOiT1yge
+    qbZ0kFiD/YK9aKOhwtmGUdTNa71IzIerR5uBCe2gCXdtUZM1giAsMr1ShyptELTL
+    dIt+dRjqpewiSK2dn7p8x2l7P6lSGluYB58bBjJW1algNGQ1zTftL8X5mF9blfsD
+    LcqoF3m5AgMBAAECggEAAoLGAWbxRXcFcvEgPR99hnKQ0YoN5qohN6mg7Jeyy6rr
+    W9c3loEuv4sYonvM415cw5ztt4fQpj8KUOpSrLOAPrg4aoPjCE3XOpURhcu63ldR
+    xCL6U3TU2xoKH1SS4Zr9KMvPom7FNgcWqSNkM/bl+FjHhwxM+3L1OT4XVqzrV6BZ
+    FP8OnBiATe95mXpeEwIJwgNhJLnm9PEBw6XXNl3YhZfXHZtXCF+ILpA0aQ/MuvZg
+    mvodocfBsVSwmSVUPLx6cpTHHqySSJ1mHmTIvWrfql0H/znG+AvfIf+3FtZwuq4N
+    UyYu3yfDxMtVhmnFXxNrT0RoaprHDErPbferFBwrwQKBgQD2Yf4CIVuVINFU0dNk
+    2vKLSBvS2CJ1bBLN92yL+sCwqVuOhovB9IytphRFP01ZYUHVChQT+L0QCi92W4mi
+    M7nAcKUGdtCcnjZornVEjjx60SxZk8kHRv1Sef4/1mW/DyCMGKUXNqFrD+zhHJJP
+    SHgt+dxyIVNdX29QTtIrPUKCQQKBgQDYHfbzH7NkaqDcuXkCRWW8SDC8FAeqLP8j
+    dPzlzsZt1HK5IsYvY/p94AjS+lT7gJr6B0NE6BQVlBwez9+FOv0E5+8Mvxgrnn90
+    bUdk94vLNDqO36GF9KNmZPat70Rvdfi3hvyX4ZlYjLsiORoARFMDVmUbIbO/V+To
+    BAz5uuupeQKBgFIBOZ8R5T6Uhrf5gqe97B6JqKEbyRRWHUgqgxlwI3RpWgztIVU0
+    BSLC9Vo7AI6wPU4gJaCkGKFfEn8NZpjzKG8xzuuA3lxSmH9tGaDwypaCSoWiF7Xx
+    Xd12tzYeMQ1PhqC6jzBTwZQ137zpWpVC5KVA1auzBeE9I3qSUYeMwzdBAoGAUNkc
+    2iUA0k8FcK099LiLb50+Bg4kM+hzZgtM1Je/KbUxWcsFgxMO0WovQuX9Rrz8vQ5c
+    fvmnEc9/mZNAVjIUF3LAve77Fs5Ldf2vmLj2pgUa5voIDfnP6u1YTwdUfbIPYnDw
+    K81stXCoTQw5iuIEgBog5r575Nf3vUhOplnj8VkCgYBJtgKJp3/rvCt1iDK+lt40
+    V/nXeIG4RMAFBeZsS5I/r4RsdNpUaGNg5wdlvJvWYmiZz/lHa48wzEcT4D5lddzR
+    VpeooLrgP5dmc0MthJIfA6thISlNY203bzqHuM9n0h92Zh7/L4AkEIrlcDsuEFhR
+    r++uHADWhBtbU9IHOcv9PA==
+    -----END PRIVATE KEY-----
+  publicKey: |
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAz/+FF7n/ujMEuHhvEmW8
+    bjY03ClmclFs8S+3lmM5mJoJjJV5s3pHBSrkj6ciEnHdnFDXqM2Jqrbt57Hh1UMW
+    RxkAMpP6E0sfujNnYit+v7T2PNU7zWi97PSLbNSBVQWL17QYgomnMK0FDG9Ddlhm
+    VW10O/hnypabJTF+uzMC97Ib8v9jPkNS1cKJOMW5uQjiQZb+g6jok9coHqm2dJBY
+    g/2CvWijocLZhlHUzWu9SMyHq0ebgQntoAl3bVGTNYIgLDK9UocqbRC0y3SLfnUY
+    6qXsIkitnZ+6fMdpez+pUhpbmAefGwYyVtWpYDRkNc037S/F+ZhfW5X7Ay3KqBd5
+    uQIDAQAB
+    -----END PUBLIC KEY-----
+
