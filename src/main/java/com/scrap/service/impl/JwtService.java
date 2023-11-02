@@ -1,8 +1,10 @@
 package com.scrap.service.impl;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.scrap.model.entity.User;
 import com.scrap.repository.LoginRepository;
 import com.scrap.service.IJwtService;
@@ -45,5 +47,25 @@ public class JwtService implements IJwtService {
     }
 
     return token;
+  }
+
+  @SneakyThrows
+  @Override
+  public void verifyJWT(String token, String userId) {
+    try {
+      Algorithm algorithm = Algorithm.RSA256(keyLoader.loadPublicKey(), keyLoader.loadPrivateKey());
+      JWTVerifier verifier = JWT.require(algorithm)
+              .withSubject(userId)
+              .build();
+
+      verifier.verify(token);
+    } catch (JWTVerificationException e) {
+      throw new MyCustomException(e.getMessage(), e.getCause());
+    }
+  }
+
+  @Override
+  public String getUserIdByToken(String token) {
+    return JWT.decode(token).getSubject();
   }
 }

@@ -14,7 +14,8 @@ INSERT INTO login (user_id, email, password) VALUES
 INSERT INTO page (name, url, user_id, count) VALUES
     ('Page 1', 'https://example.com/page1', 1, 1),
     ('Page 2', 'https://example.com/page2', 2, 2),
-    ('Page 3', 'https://example.com/page3', 3, 3);
+    ('Page 3', 'https://example.com/page3', 3, 3),
+    ('Page 4', 'https://example.com/page4', 3, 0);
 
 -- Insert data into the 'page_url' table
 INSERT INTO page_url (page_id, name, url) VALUES

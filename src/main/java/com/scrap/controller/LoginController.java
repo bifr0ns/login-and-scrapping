@@ -6,6 +6,7 @@ import com.scrap.model.response.ResponseApi;
 import com.scrap.service.IJwtService;
 import com.scrap.service.ILoginService;
 import com.scrap.util.Constants;
+import com.scrap.util.Response;
 import com.scrap.util.Urls;
 import com.scrap.util.component.PasswordHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,31 +37,31 @@ public class LoginController {
   /**
    * Get JWToken from a login
    *
-   * @param requestLogin Username, email and password
+   * @param requestLogin Email and password
    * @return User JWToken
    */
   @CrossOrigin(origins = Urls.ORIGEN)
   @PostMapping("/login")
-  public ResponseEntity<ResponseApi<String>> login(@RequestBody RequestLogin requestLogin) {
+  public ResponseEntity<ResponseApi<Object>> login(@RequestBody RequestLogin requestLogin) {
 
     String hashedPass = loginService.getToken(requestLogin);
 
     boolean verified = passwordHandler.verifyPassword(requestLogin.getPassword(), hashedPass);
 
     if (!verified) {
-      return createNewResponseApi(Constants.BAD_USER_OR_PASS, Constants.BAD_REQUEST, HttpStatus.UNAUTHORIZED);
+      return Response.createNewResponseApi(Constants.BAD_USER_OR_PASS, Constants.BAD_REQUEST, HttpStatus.UNAUTHORIZED);
     }
 
     String token = jwtService.createJWT(requestLogin.getEmail());
 
-    return createNewResponseApi(token, Constants.SUCCESS, HttpStatus.OK);
+    return Response.createNewResponseApi(token, Constants.SUCCESS, HttpStatus.OK);
   }
 
   /**
    * Get Token from a login
    *
-   * @param requestSignup Email and password
-   * @return JWToken
+   * @param requestSignup Username, email and password
+   * @return If the signup was successful
    */
   @CrossOrigin(Urls.ORIGEN)
   @PostMapping("/signup")
@@ -77,19 +78,6 @@ public class LoginController {
 
     return new ResponseEntity<>(
             response, HttpStatus.OK
-    );
-  }
-
-  private ResponseEntity<ResponseApi<String>> createNewResponseApi(
-          String response, String msgResponse, HttpStatus httpStatus
-  ) {
-    ResponseApi<String> responseBody = ResponseApi.<String>builder()
-            .msgResponse(msgResponse)
-            .response(response)
-            .build();
-
-    return new ResponseEntity<>(
-            responseBody, httpStatus
     );
   }
 
