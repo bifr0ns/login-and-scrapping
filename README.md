@@ -46,6 +46,14 @@ one for doing a signup, one to login, one to scrap an url, another one to see th
 to see the links from an url. Each call has a verify token, so after the login we need to save the JWT to do the calls, 
 and have the token as a header.
 
+`Some notes regarding the application: 
+`
+
+- The app has pagination, but It does not have the page number on the response, so you can only change the page number by updating the page number on the endpoint.
+- The app can show a page even if the scrap has not finished scrapping, it shows an _"in progress"_ message, in totalLinks on the response. Sometimes you are not fast enough to see it, 
+so I added a timer on _PageService:60_, that we can put like 10 seconds and be able to easily see the _"in progress"_ message before it finish scrapping.
+The way this works is by saving the Page entity first, before the scrapping part. 
+
 The application has five endpoints
 
 `POST /signup` to create a new user:
@@ -107,7 +115,12 @@ Response:
       "id": 5,
       "name": "Wikipedia, the free encyclopedia",
       "totalLinks": "267"
-    }
+    },
+     {
+        "id": 6,
+        "name": "Processing: https://reddit.com/",
+        "totalLinks": "in progress"
+     }
   ]
 }
    ```
@@ -146,7 +159,7 @@ Response:
 }
    ```
 
-## 🔋 Features
+## 🔋 Tools
 
 - The application uses [H2](https://www.h2database.com/html/main.html) for a local DB, it has the schema and data on the resources package. Everytime we reload the application
 the data will reset.
