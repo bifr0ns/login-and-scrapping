@@ -1,7 +1,7 @@
 package com.scrap.service.impl;
 
-import com.scrap.model.entity.Page;
 import com.scrap.model.entity.PageUrl;
+import com.scrap.model.entity.Url;
 import com.scrap.model.response.ResponsePage;
 import com.scrap.model.response.ResponsePageInfo;
 import com.scrap.repository.PageRepository;
@@ -12,6 +12,8 @@ import com.scrap.util.component.Scrapping;
 import com.scrap.util.exception.MyCustomException;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,18 +41,18 @@ public class PageService implements IPageService {
   private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
   @Override
-  public CompletableFuture<Page> createNewPageAsync(Integer userId, String url) {
-    Page newPage = createNewPage(userId, url);
-    return CompletableFuture.completedFuture(newPage);
+  public CompletableFuture<Url> createNewPageAsync(Integer userId, String url) {
+    Url newUrl = createNewPage(userId, url);
+    return CompletableFuture.completedFuture(newUrl);
   }
 
   @Override
-  public CompletableFuture<Void> getLinksFromUrlAsync(Page newPage, String url) {
+  public CompletableFuture<Void> getLinksFromUrlAsync(Url newUrl, String url) {
     CompletableFuture<Void> future = new CompletableFuture<>();
 
     executor.schedule(() -> {
       try {
-        getLinksFromUrl(newPage, url);
+        getLinksFromUrl(newUrl, url);
         future.complete(null);
       } catch (Exception e) {
         future.completeExceptionally(e);
@@ -61,32 +63,29 @@ public class PageService implements IPageService {
   }
 
   @Override
-  public List<ResponsePage> getPagesForUser(Integer userId) {
-    List<Page> pages = pageRepository.findByUserId(userId);
+  public Page<ResponsePage> getPagesForUser(Integer userId, Pageable pageable) {
+    Page<Url> pages = pageRepository.findByUserId(userId, pageable);
 
-    return pages.stream()
-            .map(page -> {
-              String totalLinks = page.getCount() != -1 ? String.valueOf(page.getCount()) : Constants.IN_PROGRESS;
+    return pages.map(page -> {
+      String totalLinks = page.getCount() != -1 ? String.valueOf(page.getCount()) : Constants.IN_PROGRESS;
 
-              return ResponsePage.builder()
-                      .id(page.getId())
-                      .name(page.getName())
-                      .totalLinks(totalLinks)
-                      .build();
-            })
-            .toList();
+      return ResponsePage.builder()
+              .id(page.getId())
+              .name(page.getName())
+              .totalLinks(totalLinks)
+              .build();
+    });
   }
 
   @Override
-  public List<ResponsePageInfo> getPageInfo(Integer pageId) {
-    List<PageUrl> pageInfo = pageUrlRepository.findByPageId(pageId);
+  public Page<ResponsePageInfo> getPageInfo(Integer pageId, Pageable pageable) {
+    Page<PageUrl> pageInfo = pageUrlRepository.findByPageId(pageId, pageable);
 
-    return pageInfo.stream()
-            .map(info -> ResponsePageInfo.builder()
-                    .name(info.getName())
-                    .link(info.getUrl())
-                    .build())
-            .toList();
+    return pageInfo.map(info -> ResponsePageInfo.builder()
+            .name(info.getName())
+            .link(info.getUrl())
+            .build()
+    );
   }
 
   @Override
@@ -96,8 +95,8 @@ public class PageService implements IPageService {
             .orElse(null);
   }
 
-  private Page createNewPage(Integer userId, String url) {
-    Page page = Page.builder()
+  private Url createNewPage(Integer userId, String url) {
+    Url page = Url.builder()
             .name("Processing: " + url)
             .url(url)
             .userId(userId)
@@ -109,7 +108,7 @@ public class PageService implements IPageService {
   }
 
   @SneakyThrows
-  private void getLinksFromUrl(Page page, String url) {
+  private void getLinksFromUrl(Url page, String url) {
     Map<String, String> links;
 
     try {

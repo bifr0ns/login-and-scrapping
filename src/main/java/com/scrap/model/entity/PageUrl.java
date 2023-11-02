@@ -27,7 +27,7 @@ public class PageUrl {
 
   @ManyToOne
   @JoinColumn(name = "page_id")
-  private Page page;
+  private Url page;
 
   private String name;
   private String url;

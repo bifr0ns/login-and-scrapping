@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @Builder
 @Entity
 @Table(name = "Page")
-public class Page {
+public class Url {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

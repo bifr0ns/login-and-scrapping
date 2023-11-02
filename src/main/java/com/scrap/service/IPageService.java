@@ -1,21 +1,22 @@
 package com.scrap.service;
 
-import com.scrap.model.entity.Page;
+import com.scrap.model.entity.Url;
 import com.scrap.model.response.ResponsePage;
 import com.scrap.model.response.ResponsePageInfo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface IPageService {
 
-  CompletableFuture<Page> createNewPageAsync(Integer userId, String url);
+  CompletableFuture<Url> createNewPageAsync(Integer userId, String url);
 
-  CompletableFuture<Void> getLinksFromUrlAsync(Page page, String url);
+  CompletableFuture<Void> getLinksFromUrlAsync(Url page, String url);
 
-  List<ResponsePage> getPagesForUser(Integer userId);
+  Page<ResponsePage> getPagesForUser(Integer userId, Pageable pageable);
 
-  List<ResponsePageInfo> getPageInfo(Integer pageId);
+  Page<ResponsePageInfo> getPageInfo(Integer pageId, Pageable pageable);
 
   String getUserFromPageId(Integer pageId);
 }

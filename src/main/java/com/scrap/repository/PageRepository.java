@@ -1,12 +1,12 @@
 package com.scrap.repository;
 
 
-import com.scrap.model.entity.Page;
+import com.scrap.model.entity.Url;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
-public interface PageRepository extends JpaRepository<Page, Integer> {
-  List<Page> findByUserId(Integer id);
+public interface PageRepository extends JpaRepository<Url, Integer> {
+  Page<Url> findByUserId(Integer id, Pageable pageable);
 
 }
