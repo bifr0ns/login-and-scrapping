@@ -1,5 +1,6 @@
 package com.scrap.controller;
 
+import com.scrap.model.entity.Page;
 import com.scrap.model.request.RequestPage;
 import com.scrap.model.response.ResponseApi;
 import com.scrap.model.response.ResponsePage;
@@ -12,6 +13,7 @@ import com.scrap.util.Urls;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,14 +38,19 @@ public class PageController {
 
   @CrossOrigin(origins = Urls.ORIGEN)
   @PostMapping("")
+  @Transactional
   public ResponseEntity<ResponseApi<Object>> scrapPage(
           @RequestBody RequestPage requestPage,
           @RequestHeader String token
   ) {
 
-    jwtService.verifyJWT(token, jwtService.getUserIdByToken(token));
+    String userIdByToken = jwtService.getUserIdByToken(token);
+    jwtService.verifyJWT(token, userIdByToken);
 
-    pageService.getLinksFromUrl(requestPage.getUrl());
+    Page newPage = pageService.createNewPage(Integer.valueOf(userIdByToken), requestPage.getUrl());
+
+
+    pageService.getLinksFromUrl(newPage, requestPage.getUrl());
 
     ResponseApi<Object> response = ResponseApi.builder()
             .msgResponse(Constants.SUCCESS)
@@ -88,12 +95,12 @@ public class PageController {
     String userId = pageService.getUserFromPageId(pageId);
 
     if (!Objects.equals(userIdByToken, userId)) {
-      return Response.createNewResponseApi(Constants.SESSION_ERROR,
-              HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-              HttpStatus.UNAUTHORIZED);
+      return Response.createNewResponseApi(Constants.R_NOT_FOUND,
+              HttpStatus.NOT_FOUND.getReasonPhrase(),
+              HttpStatus.NOT_FOUND);
     }
 
-    List<ResponsePageInfo> linksForPage = pageService.getPageInfo(Integer.valueOf(userIdByToken));
+    List<ResponsePageInfo> linksForPage = pageService.getPageInfo(pageId);
 
     ResponseApi<Object> response = ResponseApi.builder()
             .msgResponse(Constants.SUCCESS)

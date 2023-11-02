@@ -22,8 +22,8 @@ CREATE TABLE login (
 -- Create the 'page' table
 CREATE TABLE page (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),
-    url VARCHAR(100),
+    name VARCHAR(255),
+    url VARCHAR(255),
     user_id INT NOT NULL,
     count INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -34,7 +34,7 @@ CREATE TABLE page (
 CREATE TABLE page_url (
     id INT AUTO_INCREMENT PRIMARY KEY,
     page_id INT NOT NULL,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     url VARCHAR(255) NOT NULL,
     FOREIGN KEY (page_id) REFERENCES page(id) ON DELETE CASCADE
 );
